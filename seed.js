@@ -15,7 +15,6 @@ async function seed() {
     await db.query("SET FOREIGN_KEY_CHECKS = 1");
     console.log("Data lama dibersihkan");
 
-    // users.companyId NOT NULL, jadi admin tetap butuh 1 company
     const [companyResult] = await db.query(
       `INSERT INTO companies (companyName) VALUES (?)`,
       ["Equiply HQ"]
