@@ -15,7 +15,7 @@ const errorHandler = require("./middlewares/error.handler");
 const app = express();
 
 app.use(cors({
-  origin: ["https://your-frontend.vercel.app", "http://localhost:5173"],
+  origin: ["https://equiply-frontend.vercel.app", "http://localhost:5173"],
   credentials: true,
 }));
 
