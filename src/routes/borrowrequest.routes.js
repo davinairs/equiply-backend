@@ -2,14 +2,8 @@ const express = require("express");
 const router = express.Router();
 
 const borrowRequestController = require("../controllers/borrowrequest.controller");
-const {
-  validateBorrowRequest,
-  validateApproveBorrowRequest,
-} = require("../middlewares/validation/borrowrequest.validation");
-const {
-  verifyToken,
-  authorizeRole,
-} = require("../middlewares/auth.middleware");
+const { validateBorrowRequest, validateApproveBorrowRequest } = require("../middlewares/validation/borrowrequest.validation");
+const { verifyToken, authorizeRole } = require("../middlewares/auth.middleware");
 
 router.get(
   "/borrow-requests",
@@ -39,6 +33,12 @@ router.post(
   borrowRequestController.createBorrowRequest,
 );
 
+router.delete(
+  "/borrow-requests/:id",
+  verifyToken,
+  borrowRequestController.deleteBorrowRequest,
+);
+
 router.patch(
   "/borrow-requests/:id/approve",
   verifyToken,
@@ -54,24 +54,11 @@ router.patch(
   borrowRequestController.rejectBorrowRequest,
 );
 
-router.delete(
-  "/borrow-requests/:id",
-  verifyToken,
-  borrowRequestController.deleteBorrowRequest,
-);
-
 router.patch(
   "/borrow-requests/:id/return",
   verifyToken,
-  authorizeRole("user"),
-  borrowRequestController.returnBorrowRequest,
-);
-
-router.patch(
-  "/borrow-requests/:id/force-return",
-  verifyToken,
   authorizeRole("admin"),
-  borrowRequestController.forceReturnBorrowRequest,
+  borrowRequestController.returnBorrowRequest,
 );
 
 module.exports = router;

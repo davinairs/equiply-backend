@@ -41,4 +41,7 @@ const validateUpdateCategory = [
   },
 ];
 
-module.exports = { validateCategory, validateUpdateCategory };
+module.exports = {
+  validateCategory,
+  validateUpdateCategory,
+};

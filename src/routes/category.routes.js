@@ -2,14 +2,8 @@ const express = require("express");
 const router = express.Router();
 
 const categoryController = require("../controllers/category.controller");
-const {
-  validateCategory,
-  validateUpdateCategory,
-} = require("../middlewares/validation/category.validation");
-const {
-  verifyToken,
-  authorizeRole,
-} = require("../middlewares/auth.middleware");
+const { validateCategory, validateUpdateCategory } = require("../middlewares/validation/category.validation");
+const { verifyToken, authorizeRole } = require("../middlewares/auth.middleware");
 
 router.get("/categories", verifyToken, categoryController.getAllCategories);
 

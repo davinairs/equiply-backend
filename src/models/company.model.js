@@ -2,21 +2,18 @@ const db = require("../config/database");
 
 async function getAllCompanies() {
   const [rows] = await db.query(`SELECT * FROM companies`);
-
   return rows;
 }
 
 async function getCompanyById(id) {
   const [rows] = await db.query(`SELECT * FROM companies WHERE id = ?`, [id]);
-
   return rows[0];
 }
 
 async function getCompanyByName(companyName) {
   const [rows] = await db.query(
     `SELECT * FROM companies WHERE companyName = ?`,
-    [companyName],
-  );
+    [companyName]);
 
   return rows[0];
 }
@@ -24,19 +21,32 @@ async function getCompanyByName(companyName) {
 async function getUsersByCompanyId(companyId) {
   const [rows] = await db.query(
     `SELECT id FROM users WHERE companyId = ? LIMIT 1`,
-    [companyId],
-  );
+    [companyId]);
+
+  return rows;
+}
+
+async function getCategoriesByCompanyId(companyId) {
+  const [rows] = await db.query(
+    `SELECT id FROM categories WHERE companyId = ? LIMIT 1`,
+    [companyId]);
+
+  return rows;
+}
+
+async function getEquipmentsByCompanyId(companyId) {
+  const [rows] = await db.query(
+    `SELECT id FROM equipments WHERE companyId = ? LIMIT 1`,
+    [companyId]);
 
   return rows;
 }
 
 async function createCompany(companyData) {
   const { companyName } = companyData;
-
   const [result] = await db.query(
     `INSERT INTO companies (companyName) VALUES (?)`,
-    [companyName],
-  );
+    [companyName]);
 
   return { id: result.insertId, companyName };
 }
@@ -58,6 +68,7 @@ async function updateCompany(id, companyData) {
     ...values,
     id,
   ]);
+
   return getCompanyById(id);
 }
 
@@ -74,6 +85,8 @@ module.exports = {
   getCompanyById,
   getCompanyByName,
   getUsersByCompanyId,
+  getCategoriesByCompanyId,
+  getEquipmentsByCompanyId,
   createCompany,
   updateCompany,
   deleteCompany,

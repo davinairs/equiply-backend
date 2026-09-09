@@ -38,6 +38,18 @@ async function markAsRead(req, res, next) {
   }
 }
 
+async function markAllAsRead(req, res, next) {
+  try {
+    await notificationService.markAllAsRead(req.user);
+
+    res.status(200).json({
+      message: "All notifications marked as read",
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function deleteNotification(req, res, next) {
   try {
     const { id } = req.params;
@@ -55,5 +67,6 @@ module.exports = {
   getAllNotifications,
   getNotificationById,
   markAsRead,
+  markAllAsRead,
   deleteNotification,
 };

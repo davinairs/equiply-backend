@@ -10,6 +10,12 @@ router.get(
   notificationController.getAllNotifications,
 );
 
+router.patch(
+  "/notifications/mark-all-read",
+  verifyToken,
+  notificationController.markAllAsRead,
+);
+
 router.get(
   "/notifications/:id",
   verifyToken,

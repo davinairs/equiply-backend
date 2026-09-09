@@ -9,17 +9,22 @@ const equipmentRoutes = require("./routes/equipment.routes");
 const userRoutes = require("./routes/user.routes");
 const borrowRequestRoutes = require("./routes/borrowrequest.routes");
 const notificationRoutes = require("./routes/notification.routes");
+const unitRoutes  = require("./routes/unit.routes");
 const errorHandler = require("./middlewares/error.handler");
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: ["https://your-frontend.vercel.app", "http://localhost:5173"],
+  credentials: true,
+}));
 
 app.use(express.json());
 
 app.use(logger);
 app.use(authRoutes);
 app.use(companyRoutes);
+app.use(unitRoutes);
 app.use(categoryRoutes);
 app.use(equipmentRoutes);
 app.use(userRoutes);

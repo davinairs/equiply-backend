@@ -7,11 +7,9 @@ const {
   validateUpdateUser,
   validateUpdateMyProfile,
   validateChangePassword,
+  validateCreateAdmin,
 } = require("../middlewares/validation/user.validation");
-const {
-  verifyToken,
-  authorizeRole,
-} = require("../middlewares/auth.middleware");
+const { verifyToken, authorizeRole } = require("../middlewares/auth.middleware");
 const { uploadProfileImage } = require("../middlewares/upload.middleware");
 
 router.get("/users/me", verifyToken, userController.getMyProfile);
@@ -62,18 +60,40 @@ router.put(
   userController.updateUser,
 );
 
+router.get(
+  "/admins",
+  verifyToken,
+  authorizeRole("superadmin"),
+  userController.getAllAdmins,
+);
+
+router.get(
+  "/admins/:id",
+  verifyToken,
+  authorizeRole("superadmin"),
+  userController.getAdminById,
+);
+
 router.patch(
   "/users/:id/deactivate",
   verifyToken,
-  authorizeRole("admin"),
+  authorizeRole("admin", "superadmin"),
   userController.deactivateUser,
 );
 
 router.patch(
   "/users/:id/activate",
   verifyToken,
-  authorizeRole("admin"),
+  authorizeRole("admin", "superadmin"),
   userController.activateUser,
+);
+
+router.post(
+  "/companies/:companyId/admins",
+  verifyToken,
+  authorizeRole("superadmin"),
+  validateCreateAdmin,
+  userController.createAdminForCompany,
 );
 
 module.exports = router;

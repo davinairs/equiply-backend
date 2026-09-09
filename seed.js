@@ -1,45 +1,37 @@
-const bcrypt = require("bcrypt");
-const db = require("./src/config/database");
+const bcrypt = require('bcrypt');
+const db = require('./src/config/database');
 
-async function seed() {
-  try {
-    console.log("Mulai seeding...");
+const CONFIG = {
+    username: 'superadmin',
+    fullName: 'Super Admin',
+    email: 'superadmin@equiply.app',
+    password: 'supersuper', 
+};
 
-    await db.query("SET FOREIGN_KEY_CHECKS = 0");
-    await db.query("TRUNCATE TABLE notifications");
-    await db.query("TRUNCATE TABLE borrow_requests");
-    await db.query("TRUNCATE TABLE equipments");
-    await db.query("TRUNCATE TABLE categories");
-    await db.query("TRUNCATE TABLE users");
-    await db.query("TRUNCATE TABLE companies");
-    await db.query("SET FOREIGN_KEY_CHECKS = 1");
-    console.log("Data lama dibersihkan");
+async function seedSuperAdmin() {
+    try {
+        const hashedPassword = await bcrypt.hash(CONFIG.password, 10);
 
-    const [companyResult] = await db.query(
-      `INSERT INTO companies (companyName) VALUES (?)`,
-      ["Equiply HQ"]
-    );
-    const companyId = companyResult.insertId;
-    console.log("Company dibuat, id:", companyId);
+        const query = `
+            INSERT INTO users
+                (companyId, unitId, username, fullName, email, password, role, status)
+            VALUES
+                (NULL, NULL, ?, ?, ?, ?, 'superadmin', 'active')
+        `;
 
-    const adminPassword = await bcrypt.hash("admin123", 10);
-    const [adminResult] = await db.query(
-      `INSERT INTO users (companyId, username, fullName, email, password, role)
-       VALUES (?, ?, ?, ?, ?, ?)`,
-      [companyId, "admin1", "Admin Satu", "admin@equiply.com", adminPassword, "admin"]
-    );
-    console.log(
-      "Admin dibuat, id:",
-      adminResult.insertId,
-      "| login: admin@equiply.com / admin123"
-    );
+        const [result] = await db.execute(query, [
+            CONFIG.username,
+            CONFIG.fullName,
+            CONFIG.email,
+            hashedPassword,
+        ]);
 
-    console.log("\n✅ Seeding selesai! Database bersih, cuma ada 1 admin.");
-    process.exit(0);
-  } catch (error) {
-    console.error("❌ Seeding gagal:", error);
-    process.exit(1);
-  }
+        console.log('Super admin created with id:', result.insertId);
+        process.exit(0);
+    } catch (err) {
+        console.error('Failed to seed super admin:', err.message);
+        process.exit(1);
+    }
 }
 
-seed();
+seedSuperAdmin();

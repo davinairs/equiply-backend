@@ -2,26 +2,16 @@ const express = require("express");
 const router = express.Router();
 
 const equipmentController = require("../controllers/equipment.controller");
-const {
-  validateEquipment,
-  validateUpdateEquipment,
-} = require("../middlewares/validation/equipment.validation");
-const {
-  verifyToken,
-  authorizeRole,
-} = require("../middlewares/auth.middleware");
+const { validateEquipment, validateUpdateEquipment } = require("../middlewares/validation/equipment.validation");
+const { verifyToken, authorizeRole } = require("../middlewares/auth.middleware");
 const { uploadEquipmentImage } = require("../middlewares/upload.middleware");
 
-router.get("/equipments", verifyToken, equipmentController.getAllEquipments);
+router.get("/equipment", verifyToken, equipmentController.getAllEquipments);
 
-router.get(
-  "/equipments/:id",
-  verifyToken,
-  equipmentController.getEquipmentById,
-);
+router.get("/equipment/:id", verifyToken, equipmentController.getEquipmentById);
 
 router.post(
-  "/equipments",
+  "/equipment",
   verifyToken,
   authorizeRole("admin"),
   uploadEquipmentImage.single("equipmentImage"),
@@ -30,7 +20,7 @@ router.post(
 );
 
 router.put(
-  "/equipments/:id",
+  "/equipment/:id",
   verifyToken,
   authorizeRole("admin"),
   uploadEquipmentImage.single("equipmentImage"),
@@ -39,7 +29,7 @@ router.put(
 );
 
 router.delete(
-  "/equipments/:id",
+  "/equipment/:id",
   verifyToken,
   authorizeRole("admin"),
   equipmentController.deleteEquipment,

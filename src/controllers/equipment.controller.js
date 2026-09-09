@@ -2,7 +2,7 @@ const equipmentService = require("../services/equipment.service");
 
 async function getAllEquipments(req, res, next) {
   try {
-    const equipments = await equipmentService.getAllEquipments();
+    const equipments = await equipmentService.getAllEquipments(req.user);
     res.json(equipments);
   } catch (error) {
     next(error);
@@ -12,7 +12,7 @@ async function getAllEquipments(req, res, next) {
 async function getEquipmentById(req, res, next) {
   try {
     const { id } = req.params;
-    const equipment = await equipmentService.getEquipmentById(id);
+    const equipment = await equipmentService.getEquipmentById(id, req.user);
     res.json(equipment);
   } catch (error) {
     next(error);
@@ -22,13 +22,14 @@ async function getEquipmentById(req, res, next) {
 async function createEquipment(req, res, next) {
   try {
     const equipmentData = { ...req.body };
-
-    if (req.file) {
-      equipmentData.equipmentImage = req.file.path;
-    }
-
-    const equipment = await equipmentService.createEquipment(equipmentData);
-    res.status(201).json({ message: "Equipment created successfully", data: equipment });
+    if (req.file) equipmentData.equipmentImage = req.file.path;
+    const equipment = await equipmentService.createEquipment(
+      equipmentData,
+      req.user,
+    );
+    res
+      .status(201)
+      .json({ message: "Equipment created successfully", data: equipment });
   } catch (error) {
     next(error);
   }
@@ -43,8 +44,14 @@ async function updateEquipment(req, res, next) {
       equipmentData.equipmentImage = req.file.path;
     }
 
-    const equipment = await equipmentService.updateEquipment(id, equipmentData);
-    res.status(200).json({ message: "Equipment updated successfully", data: equipment });
+    const equipment = await equipmentService.updateEquipment(
+      id,
+      equipmentData,
+      req.user,
+    );
+    res
+      .status(200)
+      .json({ message: "Equipment updated successfully", data: equipment });
   } catch (error) {
     next(error);
   }
@@ -53,7 +60,7 @@ async function updateEquipment(req, res, next) {
 async function deleteEquipment(req, res, next) {
   try {
     const { id } = req.params;
-    await equipmentService.deleteEquipment(id);
+    await equipmentService.deleteEquipment(id, req.user);
 
     res.status(200).json({
       message: "Equipment deleted successfully",

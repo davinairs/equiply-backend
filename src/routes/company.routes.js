@@ -2,33 +2,27 @@ const express = require("express");
 const router = express.Router();
 
 const companyController = require("../controllers/company.controller");
-const {
-  validateCompany,
-  validateUpdateCompany,
-} = require("../middlewares/validation/company.validation");
-const {
-  verifyToken,
-  authorizeRole,
-} = require("../middlewares/auth.middleware");
+const { validateCompany, validateUpdateCompany } = require("../middlewares/validation/company.validation");
+const { verifyToken, authorizeRole } = require("../middlewares/auth.middleware");
 
 router.get(
   "/companies",
   verifyToken,
-  authorizeRole("admin"),
+  authorizeRole("superadmin"),
   companyController.getAllCompanies,
 );
 
 router.get(
   "/companies/:id",
   verifyToken,
-  authorizeRole("admin"),
+  authorizeRole("superadmin", "admin"),
   companyController.getCompanyById,
 );
 
 router.post(
   "/companies",
   verifyToken,
-  authorizeRole("admin"),
+  authorizeRole("superadmin"),
   validateCompany,
   companyController.createCompany,
 );
@@ -36,7 +30,7 @@ router.post(
 router.put(
   "/companies/:id",
   verifyToken,
-  authorizeRole("admin"),
+  authorizeRole("superadmin"),
   validateUpdateCompany,
   companyController.updateCompany,
 );
@@ -44,7 +38,7 @@ router.put(
 router.delete(
   "/companies/:id",
   verifyToken,
-  authorizeRole("admin"),
+  authorizeRole("superadmin"),
   companyController.deleteCompany,
 );
 

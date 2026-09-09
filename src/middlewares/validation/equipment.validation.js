@@ -73,7 +73,7 @@ const validateUpdateEquipment = [
 
   body("equipmentStatus")
     .optional()
-    .isIn(["available", "borrowed", "maintenance"])
+    .isIn(["available", "maintenance"])
     .withMessage("Invalid status value"),
 
   (req, res, next) => {
@@ -85,4 +85,7 @@ const validateUpdateEquipment = [
   },
 ];
 
-module.exports = { validateEquipment, validateUpdateEquipment };
+module.exports = {
+  validateEquipment,
+  validateUpdateEquipment,
+};

@@ -2,7 +2,9 @@ const borrowRequestService = require("../services/borrowrequest.service");
 
 async function getAllBorrowRequests(req, res, next) {
   try {
-    const borrowRequests = await borrowRequestService.getAllBorrowRequests();
+    const borrowRequests = await borrowRequestService.getAllBorrowRequests(
+      req.user,
+    );
     res.json(borrowRequests);
   } catch (error) {
     next(error);
@@ -11,7 +13,9 @@ async function getAllBorrowRequests(req, res, next) {
 
 async function getMyBorrowRequests(req, res, next) {
   try {
-    const borrowRequests = await borrowRequestService.getMyBorrowRequests(req.user.id);
+    const borrowRequests = await borrowRequestService.getMyBorrowRequests(
+      req.user.id,
+    );
     res.json(borrowRequests);
   } catch (error) {
     next(error);
@@ -21,7 +25,10 @@ async function getMyBorrowRequests(req, res, next) {
 async function getBorrowRequestById(req, res, next) {
   try {
     const { id } = req.params;
-    const borrowRequest = await borrowRequestService.getBorrowRequestById(id, req.user);
+    const borrowRequest = await borrowRequestService.getBorrowRequestById(
+      id,
+      req.user,
+    );
     res.json(borrowRequest);
   } catch (error) {
     next(error);
@@ -31,7 +38,8 @@ async function getBorrowRequestById(req, res, next) {
 async function createBorrowRequest(req, res, next) {
   try {
     const borrowRequestData = { ...req.body, userId: req.user.id };
-    const borrowRequest = await borrowRequestService.createBorrowRequest(borrowRequestData);
+    const borrowRequest =
+      await borrowRequestService.createBorrowRequest(borrowRequestData);
     res.status(201).json(borrowRequest);
   } catch (error) {
     next(error);
@@ -42,8 +50,15 @@ async function approveBorrowRequest(req, res, next) {
   try {
     const { id } = req.params;
     const { dueDate } = req.body;
-    const borrowRequest = await borrowRequestService.approveBorrowRequest(id, dueDate);
-    res.status(200).json({ message: "Borrow request approved successfully", data: borrowRequest });
+    const borrowRequest = await borrowRequestService.approveBorrowRequest(
+      id,
+      dueDate,
+      req.user,
+    );
+    res.status(200).json({
+      message: "Borrow request approved successfully",
+      data: borrowRequest,
+    });
   } catch (error) {
     next(error);
   }
@@ -52,8 +67,14 @@ async function approveBorrowRequest(req, res, next) {
 async function rejectBorrowRequest(req, res, next) {
   try {
     const { id } = req.params;
-    const borrowRequest = await borrowRequestService.rejectBorrowRequest(id);
-    res.status(200).json({ message: "Borrow request rejected successfully", data: borrowRequest });
+    const borrowRequest = await borrowRequestService.rejectBorrowRequest(
+      id,
+      req.user,
+    );
+    res.status(200).json({
+      message: "Borrow request rejected successfully",
+      data: borrowRequest,
+    });
   } catch (error) {
     next(error);
   }
@@ -72,18 +93,14 @@ async function deleteBorrowRequest(req, res, next) {
 async function returnBorrowRequest(req, res, next) {
   try {
     const { id } = req.params;
-    const borrowRequest = await borrowRequestService.returnBorrowRequest(id, req.user.id);
-    res.status(200).json({ message: "Equipment returned successfully", data: borrowRequest });
-  } catch (error) {
-    next(error);
-  }
-}
-
-async function forceReturnBorrowRequest(req, res, next) {
-  try {
-    const { id } = req.params;
-    const borrowRequest = await borrowRequestService.forceReturnBorrowRequest(id);
-    res.status(200).json({ message: "Equipment marked as completed by admin", data: borrowRequest });
+    const borrowRequest = await borrowRequestService.returnBorrowRequest(
+      id,
+      req.user,
+    );
+    res.status(200).json({
+      message: "Equipment returned successfully",
+      data: borrowRequest,
+    });
   } catch (error) {
     next(error);
   }
@@ -98,5 +115,4 @@ module.exports = {
   rejectBorrowRequest,
   deleteBorrowRequest,
   returnBorrowRequest,
-  forceReturnBorrowRequest,
 };

@@ -1,14 +1,17 @@
 require("dotenv").config();
+require("./corn/borrowCorn");
 
 const app = require("./app");
 const db = require("./config/database");
+
 
 const PORT = process.env.PORT || 8080;
 
 async function testConnection() {
   try {
-    await db.getConnection();
+    const connection = await db.getConnection();
     console.log("Success");
+    connection.release();
   } catch (err) {
     console.log("Unsuccessful");
     console.log(err.message);

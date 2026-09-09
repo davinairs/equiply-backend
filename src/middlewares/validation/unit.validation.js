@@ -1,11 +1,11 @@
 const { body, validationResult } = require("express-validator");
 
-const validateCompany = [
-  body("companyName")
+const validateUnit = [
+  body("unitName")
     .notEmpty()
-    .withMessage("Company name is required")
+    .withMessage("Unit name is required")
     .isLength({ max: 100 })
-    .withMessage("Company name must not exceed 100 characters"),
+    .withMessage("Unit name must not exceed 100 characters"),
 
   (req, res, next) => {
     const errors = validationResult(req);
@@ -16,11 +16,11 @@ const validateCompany = [
   },
 ];
 
-const validateUpdateCompany = [
-  body("companyName")
+const validateUpdateUnit = [
+  body("unitName")
     .optional()
     .isLength({ max: 100 })
-    .withMessage("Company name must not exceed 100 characters"),
+    .withMessage("Unit name must not exceed 100 characters"),
 
   (req, res, next) => {
     const errors = validationResult(req);
@@ -32,6 +32,6 @@ const validateUpdateCompany = [
 ];
 
 module.exports = {
-  validateCompany,
-  validateUpdateCompany,
+  validateUnit,
+  validateUpdateUnit,
 };

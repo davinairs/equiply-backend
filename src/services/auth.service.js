@@ -5,27 +5,27 @@ const AppError = require("../untils/app.error");
 
 async function login(loginData) {
   const { email, password } = loginData;
-
   const user = await userModel.getUserByEmail(email);
 
   if (!user) {
     throw new AppError("Invalid email or password", 401);
   }
 
-  if (user.status !== "active") {
-    throw new AppError("inactive account", 403);
-  }
-
   const isMatch = await bcrypt.compare(password, user.password);
-
   if (!isMatch) {
     throw new AppError("Invalid email or password", 401);
+  }
+
+  if (user.status !== "active") {
+    throw new AppError("Your account is inactive", 403);
   }
 
   const token = jwt.sign(
     {
       id: user.id,
       role: user.role,
+      companyId: user.companyId,
+      unitId: user.unitId,
     },
     process.env.JWT_SECRET,
     {
@@ -39,6 +39,7 @@ async function login(loginData) {
     user: {
       id: user.id,
       companyId: user.companyId,
+      unitId: user.unitId,
       username: user.username,
       fullName: user.fullName,
       email: user.email,
@@ -47,6 +48,4 @@ async function login(loginData) {
   };
 }
 
-module.exports = {
-  login,
-};
+module.exports = { login };

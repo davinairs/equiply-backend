@@ -9,6 +9,13 @@ const db = mysql.createPool({
   password: process.env.DB_PASSWORD || process.env.MYSQLPASSWORD,
   database: process.env.DB_NAME || process.env.MYSQL_DATABASE,
   dateStrings: true,
+  enableKeepAlive: true,
+  keepAliveInitialDelay: 0,
+  timezone: '+07:00',
+});
+
+db.on('connection', (connection) => {
+  connection.query("SET time_zone = '+07:00'");
 });
 
 module.exports = db;

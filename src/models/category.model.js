@@ -1,22 +1,27 @@
 const db = require("../config/database");
 
-async function getAllCategories() {
-  const [rows] = await db.query(`SELECT * FROM categories`);
+async function getAllCategories(companyId) {
+  const [rows] = await db.query(
+    `SELECT * FROM categories WHERE companyId = ?`,
+    [companyId]);
 
+  return rows;
+}
+
+async function getAllCategoriesAcrossCompanies() {
+  const [rows] = await db.query(`SELECT * FROM categories`);
   return rows;
 }
 
 async function getCategoryById(id) {
   const [rows] = await db.query(`SELECT * FROM categories WHERE id = ?`, [id]);
-
   return rows[0];
 }
 
-async function getCategoryByName(categoryName) {
+async function getCategoryByNameInCompany(companyId, categoryName) {
   const [rows] = await db.query(
-    `SELECT * FROM categories WHERE categoryName = ?`,
-    [categoryName],
-  );
+    `SELECT * FROM categories WHERE companyId = ? AND categoryName = ?`,
+    [companyId, categoryName]);
 
   return rows[0];
 }
@@ -24,21 +29,19 @@ async function getCategoryByName(categoryName) {
 async function getEquipmentsByCategoryId(categoryId) {
   const [rows] = await db.query(
     `SELECT id FROM equipments WHERE categoryId = ? LIMIT 1`,
-    [categoryId],
-  );
+    [categoryId]);
 
   return rows;
 }
 
 async function createCategory(categoryData) {
-  const { categoryName, description } = categoryData;
+  const { companyId, categoryName, description } = categoryData;
 
   const [result] = await db.query(
-    `INSERT INTO categories (categoryName, description) VALUES (?, ?)`,
-    [categoryName, description],
-  );
+    `INSERT INTO categories (companyId, categoryName, description) VALUES (?, ?, ?)`,
+    [companyId, categoryName, description]);
 
-  return { id: result.insertId, categoryName, description };
+  return { id: result.insertId, companyId, categoryName, description };
 }
 
 async function updateCategory(id, categoryData) {
@@ -71,8 +74,9 @@ async function deleteCategory(id) {
 
 module.exports = {
   getAllCategories,
+  getAllCategoriesAcrossCompanies,
   getCategoryById,
-  getCategoryByName,
+  getCategoryByNameInCompany,
   getEquipmentsByCategoryId,
   createCategory,
   updateCategory,

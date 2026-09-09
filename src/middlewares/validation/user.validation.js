@@ -9,11 +9,11 @@ const runValidation = (req, res, next) => {
 };
 
 const validateUser = [
-  body("companyId")
+  body("unitId")
     .notEmpty()
-    .withMessage("Company is required")
+    .withMessage("Unit is required")
     .isInt()
-    .withMessage("Invalid company ID"),
+    .withMessage("Invalid unit ID"),
 
   body("username")
     .notEmpty()
@@ -43,17 +43,11 @@ const validateUser = [
 
   body("profileImage").optional(),
 
-  body("role")
-    .notEmpty()
-    .withMessage("Role is required")
-    .isIn(["admin", "user"])
-    .withMessage("Invalid role value"),
-
   runValidation,
 ];
 
 const validateUpdateUser = [
-  body("companyId").optional().isInt().withMessage("Invalid company ID"),
+  body("unitId").optional().isInt().withMessage("Invalid unit ID"),
 
   body("username")
     .optional()
@@ -73,11 +67,6 @@ const validateUpdateUser = [
     .withMessage("Email must not exceed 100 characters"),
 
   body("profileImage").optional(),
-
-  body("role")
-    .optional()
-    .isIn(["admin", "user"])
-    .withMessage("Invalid role value"),
 
   runValidation,
 ];
@@ -117,9 +106,38 @@ const validateChangePassword = [
   runValidation,
 ];
 
+const validateCreateAdmin = [
+  body("username")
+    .notEmpty()
+    .withMessage("Username is required")
+    .isLength({ max: 50 })
+    .withMessage("Username must not exceed 50 characters"),
+
+  body("fullName")
+    .notEmpty()
+    .withMessage("Full name is required")
+    .isLength({ max: 100 })
+    .withMessage("Full name must not exceed 100 characters"),
+
+  body("email")
+    .notEmpty()
+    .withMessage("Email is required")
+    .isEmail()
+    .withMessage("Email must be a valid email address"),
+
+  body("password")
+    .notEmpty()
+    .withMessage("Password is required")
+    .isLength({ min: 8 })
+    .withMessage("Password must be at least 8 characters"),
+
+  runValidation,
+];
+
 module.exports = {
   validateUser,
   validateUpdateUser,
   validateUpdateMyProfile,
   validateChangePassword,
+  validateCreateAdmin,
 };
